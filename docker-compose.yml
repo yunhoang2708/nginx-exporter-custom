@@ -40,6 +40,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - /prometheus/prometheus.service:/etc/systemd/system/prometheus.service
       - prometheus-data:/prometheus
     command:
       - '--web.enable-lifecycle'
@@ -59,6 +60,24 @@ services:
     volumes:
       - ./grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
       - grafana-data:/var/lib/grafana
+    networks:
+      - app
+
+  fluentd:
+    build:
+      context: ./fluentd
+      dockerfile: Dockerfile
+    container_name: fluentd
+    user: root
+    restart: unless-stopped
+    volumes:
+      - ./fluentd/fluent.conf:/etc/fluent/fluent.conf
+      - ./fluentd/logs:/fluentd/log
+      - ./fluentd/plugins:/fluentd/plugins
+      - ./fluentd/fluentd.service:/etc/systemd/system/fluentd.service
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
     networks:
       - app
 
