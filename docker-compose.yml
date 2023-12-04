@@ -11,7 +11,7 @@ services:
       - ./nginx/status.conf:/etc/nginx/conf.d/status.conf
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/myapp.conf:/etc/nginx/conf.d/default.conf
-      - ./nginx/logs:/var/log/nginx/
+      - ./nginx/logs:/var/log/nginx/*
     depends_on:
       - myapp
     networks:
@@ -28,7 +28,7 @@ services:
     ports:
       - "9150:9150"
     volumes:
-      - ./prometheus/logs:/var/log/nginx/
+      - ./prometheus/logs:/var/log/nginx/*
     networks:
       - app
 
@@ -40,7 +40,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - /prometheus/prometheus.service:/etc/systemd/system/prometheus.service
+      - ./prometheus/prometheus.service:/etc/systemd/system/prometheus.service
       - prometheus-data:/prometheus
     command:
       - '--web.enable-lifecycle'
@@ -71,9 +71,9 @@ services:
     user: root
     restart: unless-stopped
     volumes:
-      - ./fluentd/fluent.conf:/etc/fluent/fluent.conf
-      - ./fluentd/logs:/fluentd/log
-      - ./fluentd/plugins:/fluentd/plugins
+      - ./fluentd/fluent.conf:/fluentd/etc/fluent.conf
+      - ./fluentd/logs:/fluentd/log/*
+      - ./fluentd/plugins:/fluentd/plugins/*
       - ./fluentd/fluentd.service:/etc/systemd/system/fluentd.service
     ports:
       - "24224:24224"
