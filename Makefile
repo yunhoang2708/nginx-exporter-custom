@@ -3,7 +3,7 @@ up:
 .PHONY: docker-build
 
 restart: 
-	docker-compose restart
+	docker-compose stop && docker-compose up -d
 .PHONY: docker-restart
 
 down:
