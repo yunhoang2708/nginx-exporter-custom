@@ -1,0 +1,22 @@
+route:
+  receiver: 'email'
+  repeat_interval: 4h
+  group_by: [alertname]
+
+receivers:
+  - name: 'email'
+    email_configs:
+      - smarthost: localhost:8025
+        from: 'prometheus@homelab.lan'
+        to: 'xingau2708@gmail.com'
+        require_tls: yes
+
+# receivers:
+#   - name: 'email'
+#     email_configs:
+#       - smarthost: smtp.gmail.com:587
+#         from: 'myserver@gmail.com'
+#         to: 'myalerts@gmail.com'
+#         auth_username: 'myserver@gmail.com'
+#         auth_password: 'myemailpassword'
+#         auth_identiy: 'myserver@gmail.com'

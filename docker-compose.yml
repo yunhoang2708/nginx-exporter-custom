@@ -45,6 +45,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/rules.yml:/etc/prometheus/rules.yml
       - prometheus-data:/prometheus
     command:
       - '--web.enable-lifecycle'
@@ -81,6 +82,52 @@ services:
     networks:
       - app
 
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node_exporter
+    command:
+      - '--path.rootfs=/host'
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - '/:/host:ro,rslave'
+    networks:
+      - app
+
+  alertmanager:
+    image: quay.io/prometheus/alertmanager:latest
+    container_name: alertmanager
+    ports:
+      - "9093:9093"
+    restart: unless-stopped
+    volumes:
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+      - alertmanager-data:/data
+    networks:
+      - app
+
+  blackbox-exporter:
+    image: quay.io/prometheus/blackbox-exporter:latest
+    container_name: blackbox_exporter
+    ports:
+      - '9115:9115'
+    restart: unless-stopped
+    volumes:
+      - ./blackbox:/config
+    command:
+      - '--config.file=/config/blackbox.yml'
+    networks:
+      - app
+
+  speedtest-exporter:
+    image: miguelndecarvalho/speedtest-exporter
+    container_name: speedtest-exporter
+    ports:
+      - '9798:9798'
+    restart: unless-stopped
+    networks:
+      - app
+
 networks:
   app:
     driver: bridge
@@ -88,3 +135,4 @@ networks:
 volumes:
   prometheus-data: {}
   grafana-data: {}
+  alertmanager-data: {}

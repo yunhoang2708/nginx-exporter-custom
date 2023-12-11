@@ -7,7 +7,7 @@ restart:
 .PHONY: docker-restart
 
 down:
-	docker-compose down
+	docker-compose down -v --remove-orphans
 .PHONY: docker-down
 
 stop:
